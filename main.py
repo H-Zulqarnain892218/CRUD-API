@@ -2,28 +2,27 @@ from fastapi import FastAPI, HTTPException, Response, status
 from pydantic import BaseModel
 from typing import Optional
 
-app = FastAPI(
+app=FastAPI(
     title="Task API",
     version="1.0",
     description="In-memory CRUD API built for Flyrank Internship Assignment"
 )
 
-# In-memory database seed (Stage 2)
+# This section is "In-memory database seed" (Defined as Stage 2)
 tasks_db = [
     {"id": 1, "title": "Set up development environment", "done": True},
-    {"id": 2, "title": "Build FastAPI endpoints", "done": False},
+    {"id": 2, "title": "Build FastAPi endpoints", "done": False},
     {"id": 3, "title": "Complete Stage 7 AI rematch", "done": False},
 ]
 
-# Schemas for input validation (Stage 3 & 4)
+# This section is "Schemas for input validation" (Defined as Stage 3 & 4)
 class TaskCreate(BaseModel):
     title: str
-
 class TaskUpdate(BaseModel):
     title: Optional[str] = None
     done: Optional[bool] = None
 
-# Stage 1: Root and Health Endpoints
+# -> Stage 1: Root and Health Endpoints
 @app.get("/")
 def get_root():
     return {
@@ -36,7 +35,7 @@ def get_root():
 def get_health():
     return {"status": "ok"}
 
-# Stage 2: Read Endpoints
+# -> Stage 2: Reads the Endpoints
 @app.get("/tasks")
 def get_all_tasks():
     return tasks_db
@@ -48,7 +47,7 @@ def get_single_task(task_id: int):
             return task
     raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
 
-# Stage 3: Create Endpoint with Validation
+# -> Stage 3: Creates the endpoint with validation
 @app.post("/tasks", status_code=status.HTTP_201_CREATED)
 def create_task(task_data: TaskCreate):
     if not task_data.title or not task_data.title.strip():
@@ -63,7 +62,7 @@ def create_task(task_data: TaskCreate):
     tasks_db.append(new_task)
     return new_task
 
-# Stage 4: Update & Delete Endpoints
+# -> Stage 4: Update and Delete Endpoints
 @app.put("/tasks/{task_id}")
 def update_task(task_id: int, task_data: TaskUpdate):
     for task in tasks_db:
